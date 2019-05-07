@@ -9,7 +9,11 @@ public class Main {
 			public void run() {
 				try {
 					GUI frame = new GUI();
-					frame.setVisible(true);
+					frame.setVisible(true);	
+					if (Board.finished()) {
+						//save stats
+						Board.stop();
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.Vector;
 
 public class WhiteCell extends Agent {
 
@@ -14,9 +15,9 @@ public class WhiteCell extends Agent {
 
 	@Override
 	public void agentComplexDecision() {
-		updateBeliefs();
+		//updateBeliefs();
 		
-		ArrayList<Point> surr = Board.getSurroundingPoints(this);
+		//ArrayList<Point> surr = Board.getSurroundingPoints(this);
 		
 		
 	}
@@ -31,9 +32,9 @@ public class WhiteCell extends Agent {
 			//find location
 			String virusname = Board.getEntity(ahead).name;
 			
-			ArrayList<Point> surr = Board.getSurroundingPoints(this);
+			Vector<Point> surr = Board.getSurroundingPoints(this);
 			System.out.println("# surround " + surr.size());
-			ArrayList<Point> free = new ArrayList<Point>();
+			Vector<Point> free = new Vector<Point>();
 			
 			for(Point p : surr) {
 				if (!hasCell(p.x,p.y)){

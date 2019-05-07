@@ -1,7 +1,7 @@
 package loadingdocks;
 
 import java.awt.Point;
-import java.util.ArrayList;
+import java.util.Vector;
 
 
 public class Board {
@@ -11,9 +11,9 @@ public class Board {
 	public static int nX = 23, nY = 23;
 	private static Block[][] board;
 	private static Entity[][] objects;
-	private static ArrayList<WhiteCell> toticellsList;
-	private static ArrayList<SpecialCell> specializedList;
-	private static ArrayList<Virus> virusList;
+	private static Vector<WhiteCell> toticellsList;
+	private static Vector<SpecialCell> specializedList;
+	private static Vector<Virus> virusList;
 	
 	
 	/****************************
@@ -23,9 +23,9 @@ public class Board {
 	public static void simpleinitialize() {
 		board = new Block[nX][nY];
 		objects = new Agent[nX][nY];
-		toticellsList = new ArrayList<WhiteCell>();
-		specializedList = new ArrayList<SpecialCell>();
-		virusList = new ArrayList<Virus>();
+		toticellsList = new Vector<WhiteCell>();
+		specializedList = new Vector<SpecialCell>();
+		virusList = new Vector<Virus>();
 		
 		
 		/** A: create board */
@@ -111,20 +111,20 @@ public class Board {
 	 ***** B: BOARD METHODS *****
 	 ****************************/
 	
-	public static Entity getEntity(Point point) {
+	public static synchronized Entity getEntity(Point point) {
 		return objects[point.x][point.y];
 	}
-	public static Block getBlock(Point point) {
+	public static synchronized Block getBlock(Point point) {
 		return board[point.x][point.y];
 	}
-	public static void updateEntityPosition(Point point, Point newpoint) {
+	public static synchronized void updateEntityPosition(Point point, Point newpoint) {
 		objects[newpoint.x][newpoint.y] = objects[point.x][point.y];
 		objects[point.x][point.y] = null;
 	}	
-	public static void removeEntity(Point point) {
+	public static synchronized void removeEntity(Point point) {
 		objects[point.x][point.y] = null;
 	}
-	public static void insertEntity(Entity entity, Point point) {
+	public static synchronized void insertEntity(Entity entity, Point point) {
 		objects[point.x][point.y] = entity;
 	}
 
@@ -145,6 +145,9 @@ public class Board {
 		
 	    public void run() {
 	    	while(true){
+	    		if (Board.finished()) {
+	    			Board.stop();
+	    		}
 	    		step();
 				try {
 					sleep(time);
@@ -208,8 +211,8 @@ public class Board {
 		GUI = graphicalInterface;
 	}
 	
-	public static ArrayList<Point> getSurroundingPoints(Agent agent) {
-		ArrayList<Point> toret = new ArrayList<Point>();
+	public static Vector<Point> getSurroundingPoints(Agent agent) {
+		Vector<Point> toret = new Vector<Point>();
 		
 		double xpos = agent.point.getX();
 		double ypos = agent.point.getY();
@@ -267,6 +270,46 @@ public class Board {
 		board[chosen.x][chosen.y]._virname="";
 		
 		
+	}
+	
+	
+
+	public static synchronized void deleteVirus(Point p) {
+		//delete from virus
+		
+		Virus todel;
+		
+		for(Virus v : virusList) {
+			if (v.point.x == p.x && v.point.y == p.y) {
+				todel = v;
+				//remove from viruslist
+				virusList.remove(todel);
+				return;
+				//remove from entities
+//				for (Entity[] e : objects) {
+//					for(Entity e2 : e) {
+//						if(e2.equals(todel)) {
+//							e2 = null;
+//
+//						}
+//					}
+//				}
+			}
+			
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+	}
+
+	public static boolean finished() {
+		// TODO Auto-generated method stub
+		return virusList.isEmpty();
 	}
 
 }

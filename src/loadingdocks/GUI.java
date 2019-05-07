@@ -9,8 +9,9 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -33,14 +34,15 @@ public class GUI extends JFrame {
 
 		private static final long serialVersionUID = 1L;
 		
-		public List<Entity> entities = new ArrayList<Entity>();
+		public Vector<Entity> entities = new Vector<Entity>();
 		
         @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            for(Entity entity : entities) {
-            	entity.paint(g);
-            }
+        protected synchronized void paintComponent(Graphics g) {
+        	super.paintComponent(g);
+
+        	for(Entity entity : entities) {
+        		entity.paint(g);   
+        	}
         }
 	}
 
@@ -71,7 +73,7 @@ public class GUI extends JFrame {
 		add(boardPanel);
 	}
 
-	public void displayBoard() {
+	public synchronized void displayBoard() {
 		for(int i=0; i<nX; i++){
 			for(int j=0; j<nY; j++){
 				int row=nY-j-1, col=i;
@@ -82,21 +84,21 @@ public class GUI extends JFrame {
 		}
 	}
 	
-	public void removeObject(Entity object) {
+	public synchronized void removeObject(Entity object) {
 		int row=nY-object.point.y-1, col=object.point.x;
 		Cell p = (Cell)boardPanel.getComponent(row*nX+col);
 		p.setBorder(BorderFactory.createLineBorder(Color.white));			
 		p.entities.remove(object);
 	}
 	
-	public void displayObject(Entity object) {
+	public synchronized void displayObject(Entity object) {
 		int row=nY-object.point.y-1, col=object.point.x;
 		Cell p = (Cell)boardPanel.getComponent(row*nX+col);
 		p.setBorder(BorderFactory.createLineBorder(Color.white));			
 		p.entities.add(object);
 	}
 
-	public void update() {
+	public synchronized void update() {
 		boardPanel.invalidate();
 	}
 

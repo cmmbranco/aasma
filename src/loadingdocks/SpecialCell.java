@@ -4,19 +4,20 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Vector;
 
 public class SpecialCell extends Agent{
 
 	public SpecialCell(Point point, String type) {
 		super(point, type);
-		System.out.println("Special created at: "+point.getX()+","+point.getY());
+		System.out.println("Special created at: "+ point.getX() +","+ point.getY());
 	}
 
 	@Override
 	public void agentComplexDecision() {
 		updateBeliefs();
 		
-		ArrayList<Point> surr = Board.getSurroundingPoints(this);
+		Vector<Point> surr = Board.getSurroundingPoints(this);
 //		
 //		if(hasPlan() && !succeededIntention() && !impossibleIntention()){
 //			Action action = plan.remove();
@@ -39,6 +40,7 @@ public class SpecialCell extends Agent{
 		if(isWall()) rotateRandomly();
 		else if(isVirusAhead()) {
 			//TODO delete virus ahead
+			Board.deleteVirus(ahead);
 		}
 		else if(random.nextInt(5) == 0) rotateRandomly();
 		else moveAhead();
