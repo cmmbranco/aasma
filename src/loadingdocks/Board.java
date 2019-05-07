@@ -135,6 +135,9 @@ public class Board {
 	private static RunThread runThread;
 	private static GUI GUI;
 
+	public static int iterCounter = 0;
+	public static int howManyTimesToRun = 1;
+
 	public static class RunThread extends Thread {
 		
 		int time;
@@ -144,11 +147,18 @@ public class Board {
 		}
 		
 	    public void run() {
+			int counter = 0;
 	    	while(true){
 	    		if (Board.finished()) {
-	    			Board.stop();
+					System.out.println("Steps taken: " + counter);
+	    			simplereset();
+					counter = 0;
+					if(iterCounter >= howManyTimesToRun)
+						Board.stop();
+						iterCounter++;
 	    		}
 	    		step();
+				counter++;
 				try {
 					sleep(time);
 				} catch (InterruptedException e) {
@@ -159,6 +169,7 @@ public class Board {
 	}
 	
 	public static void run(int time) {
+		iterCounter = 0;
 		Board.runThread = new RunThread(time);
 		Board.runThread.start();
 	}
