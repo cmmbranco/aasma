@@ -39,41 +39,13 @@ public class GUI extends JFrame {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             for(Entity entity : entities) {
-	            //g.setColor(entity.color);
-	            if(entity instanceof WhiteCell) {
-	            	g.setColor(Color.white);
-	            	g.drawRect(15, 15, 20, 20);
-	            	g.fillRect(15, 15, 20, 20);
-	            	
-	            	
-	            
-	            } else if (entity instanceof SpecialCell) {
-	            	g.setColor(Color.yellow);
-	            	g.drawRect(15, 15, 20, 20);
-	            	g.fillRect(15, 15, 20, 20);
-	            	
-	            } else if (entity instanceof Virus) {
-	            	g.setColor(Color.red);
-	            	g.drawRect(15, 15, 20, 20);
-	            	g.fillRect(15, 15, 20, 20);
-	            	
-	            }
-	            	
-	            
-//	            } else {
-//	        		switch(((Agent)entity).direction) {
-//		    			case 0:  g.fillPolygon(new int[]{10, 25, 40}, new int[]{40, 10, 40}, 3); break;
-//		    			case 90: g.fillPolygon(new int[]{10, 40, 10}, new int[]{10, 25, 40}, 3); break;
-//		    			case 180:g.fillPolygon(new int[]{10, 40, 25}, new int[]{10, 10, 40}, 3); break;
-//		    			default: g.fillPolygon(new int[]{10, 40, 40}, new int[]{25, 10, 40}, 3); 
-//		    		}
-//	            }
+            	entity.paint(g);
             }
         }
 	}
 
 	public GUI() {
-		setTitle("Whitecells");		
+		setTitle("BloodCells");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
 		setSize(555, 625);
@@ -103,9 +75,8 @@ public class GUI extends JFrame {
 		for(int i=0; i<nX; i++){
 			for(int j=0; j<nY; j++){
 				int row=nY-j-1, col=i;
-				Block block = Board.getBlock(new Point(i,j));
 				JPanel p = ((JPanel)boardPanel.getComponent(row*nX+col));
-				p.setBackground(Color.black);
+				p.setBackground(Color.gray);
 				p.setBorder(BorderFactory.createLineBorder(Color.white));
 			}
 		}

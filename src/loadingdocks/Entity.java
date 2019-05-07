@@ -1,9 +1,10 @@
 package loadingdocks;
 
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.Random;
 
-public class Entity extends Thread {
+public abstract class Entity {
 
 	public String name;
 	public Point point;
@@ -14,4 +15,6 @@ public class Entity extends Thread {
 		this.name = type;
 		this.random = new Random();
 	} 
+	
+	public abstract void paint(Graphics g);
 }

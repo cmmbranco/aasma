@@ -63,7 +63,7 @@ public class Board {
 //					Virus v = new Virus(p, "flu");
 //					
 //					objects[i][j] = v;
-//					virus.add((Agent) v);
+//					virusList.add(v);
 //					board[i][j]._concentration=100;
 //					board[i][j]._virname = objects[i][j].name;
 //					
@@ -95,7 +95,7 @@ public class Board {
 //						WhiteCell c = new WhiteCell(p,"wite");
 //						
 //						objects[i][j] = c;
-//						toticells.add((Agent) c);
+//						toticellsList.add(c);
 //						board[i][j]._concentration=0;
 //						board[i][j]._virname = null;
 //					

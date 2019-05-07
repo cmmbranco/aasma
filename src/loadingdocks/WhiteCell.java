@@ -1,5 +1,7 @@
 package loadingdocks;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Random;
@@ -60,6 +62,13 @@ public class WhiteCell extends Agent {
 		else if(random.nextInt(5) == 0) rotateRandomly();
 		else moveAhead();
 
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		g.setColor(Color.white);
+    	g.drawRect(15, 15, 20, 20);
+    	g.fillRect(15, 15, 20, 20);
 	}
 
 }

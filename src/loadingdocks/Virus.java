@@ -1,5 +1,7 @@
 package loadingdocks;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 
 public class Virus extends Agent{
@@ -21,6 +23,12 @@ public class Virus extends Agent{
 		
 		//replicate to a cell free around with a given prob
 		
+	}
+	@Override
+	public void paint(Graphics g) {
+		g.setColor(Color.red);
+    	g.drawRect(15, 15, 20, 20);
+    	g.fillRect(15, 15, 20, 20);
 	}
 
 }

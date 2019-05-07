@@ -1,5 +1,7 @@
 package loadingdocks;
 
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.util.ArrayList;
 
@@ -40,6 +42,13 @@ public class SpecialCell extends Agent{
 		}
 		else if(random.nextInt(5) == 0) rotateRandomly();
 		else moveAhead();
+	}
+
+	@Override
+	public void paint(Graphics g) {
+		g.setColor(Color.yellow);
+    	g.drawRect(15, 15, 20, 20);
+    	g.fillRect(15, 15, 20, 20);
 	}
 
 }
