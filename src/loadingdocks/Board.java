@@ -1,26 +1,19 @@
 package loadingdocks;
 
-import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 
-/**
- * Environment
- * @author Rui Henriques
- */
 public class Board {
 
 	/** The environment */
 
 	public static int nX = 23, nY = 23;
-	private static Block[][] board = new Block[nX][nY];
-	private static Entity[][] objects = new Agent[nX][nY];
-	private static ArrayList<Agent> toticells = new ArrayList<Agent>();
-	private static ArrayList<Agent> specialized = new ArrayList<Agent>();
-	private static ArrayList<Agent> virus = new ArrayList<Agent>();
+	private static Block[][] board;
+	private static Entity[][] objects;
+	private static ArrayList<WhiteCell> toticellsList;
+	private static ArrayList<SpecialCell> specializedList;
+	private static ArrayList<Virus> virusList;
 	
 	
 	/****************************
@@ -30,14 +23,11 @@ public class Board {
 	public static void simpleinitialize() {
 		board = new Block[nX][nY];
 		objects = new Agent[nX][nY];
-		toticells = new ArrayList<Agent>();
-		specialized = new ArrayList<Agent>();
-		virus = new ArrayList<Agent>();
+		toticellsList = new ArrayList<WhiteCell>();
+		specializedList = new ArrayList<SpecialCell>();
+		virusList = new ArrayList<Virus>();
 		
 		
-		
-		
-		//Color[] colors = new Color[] {Color.red, Color.blue, Color.green, Color.yellow};
 		/** A: create board */
 		for(int i=0; i<nX; i++) 
 			for(int j=0; j<nY; j++) 
@@ -53,12 +43,12 @@ public class Board {
 		objects[p1.x][p1.y] = v1;
 		board[p1.x][p1.y]._concentration=100;
 		board[p1.x][p1.y]._virname = v1.name;
-		virus.add((Agent) v1);
+		virusList.add(v1);
 		
 		objects[p2.x][p2.y] = v2;
 		board[p2.x][p2.y]._concentration=100;
 		board[p2.x][p2.y]._virname = v2.name;
-		virus.add((Agent) v2);
+		virusList.add(v2);
 		
 		
 		
@@ -92,7 +82,7 @@ public class Board {
 		objects[0][0] = w1;
 		board[0][0]._concentration=0;
 		board[0][0]._virname = "";
-		toticells.add((Agent) w1);
+		toticellsList.add(w1);
 		
 //		for(int i=0; i < nX; i++) {
 //			for(int j=0; j < nY; j++) {
@@ -173,7 +163,7 @@ public class Board {
 	public static void simplereset() {
 		removeObjects();
 		simpleinitialize();
-		while(toticells.isEmpty() || virus.isEmpty()) {
+		while(toticellsList.isEmpty() || virusList.isEmpty()) {
 			simpleinitialize();
 		}
 		
@@ -188,9 +178,9 @@ public class Board {
 	
 	public static void step() {
 		removeObjects();
-		for(Agent a : toticells) a.agentSimpleDecision();
-		for(Agent a : specialized) a.agentSimpleDecision();
-		for(Agent a : virus) a.agentSimpleDecision();
+		for(Agent a : toticellsList) a.agentSimpleDecision();
+		for(Agent a : specializedList) a.agentSimpleDecision();
+		for(Agent a : virusList) a.agentSimpleDecision();
 		displayObjects();
 		GUI.update();
 	}
@@ -201,17 +191,17 @@ public class Board {
 	}
 
 	public static void displayObjects(){
-		for(Agent agent : toticells) GUI.displayObject(agent);
-		for(Agent agent : virus) GUI.displayObject(agent);
-		for(Agent agent : specialized) GUI.displayObject(agent);
+		for(Agent agent : toticellsList) GUI.displayObject(agent);
+		for(Agent agent : virusList) GUI.displayObject(agent);
+		for(Agent agent : specializedList) GUI.displayObject(agent);
 		
 		
 	}
 	
 	public static void removeObjects(){
-		for(Agent agent : toticells) GUI.removeObject(agent);
-		for(Agent agent : virus) GUI.removeObject(agent);
-		for(Agent agent : specialized) GUI.removeObject(agent);
+		for(Agent agent : toticellsList) GUI.removeObject(agent);
+		for(Agent agent : virusList) GUI.removeObject(agent);
+		for(Agent agent : specializedList) GUI.removeObject(agent);
 	}
 	
 	public static void associateGUI(GUI graphicalInterface) {
@@ -219,7 +209,6 @@ public class Board {
 	}
 	
 	public static ArrayList<Point> getSurroundingPoints(Agent agent) {
-		// TODO Auto-generated method stub
 		ArrayList<Point> toret = new ArrayList<Point>();
 		
 		double xpos = agent.point.getX();
@@ -241,27 +230,25 @@ public class Board {
 		return toret;
 	}
 
-	public static boolean hasCell(Point p) {
-		// TODO Auto-generated method stub
-		
-		if(toticells != null) {
-			for(Agent a : toticells) {
+	public static boolean hasCell(Point p) {	
+		if(toticellsList != null) {
+			for(Agent a : toticellsList) {
 				if (p.x == a.point.getX() && p.y == a.point.getY()) {
 					return true;
 				}
 			}
 		}
 		
-		if(specialized != null) {
-			for(Agent a : specialized) {
+		if(specializedList != null) {
+			for(Agent a : specializedList) {
 				if (p.x == a.point.getX() && p.y == a.point.getY()) {
 					return true;
 				}
 			}
 		}
 		
-		if(virus != null) {
-			for(Agent a : virus) {
+		if(virusList != null) {
+			for(Agent a : virusList) {
 				if (p.x == a.point.getX() && p.y == a.point.getY()) {
 					return true;
 				}
@@ -271,13 +258,10 @@ public class Board {
 		return false;
 	}
 
-	public static void specialize(WhiteCell whiteCell, Point chosen, String virusname) {
-		// TODO Auto-generated method stub
-		
-		
+	public static void specialize(WhiteCell whiteCell, Point chosen, String virusname) {		
 		Point p = new Point(chosen.x, chosen.y);
 		SpecialCell c = new SpecialCell(p, virusname);
-		specialized.add(c);
+		specializedList.add(c);
 		objects[chosen.x][chosen.y] = c;
 		board[chosen.x][chosen.y]._concentration = 100;
 		board[chosen.x][chosen.y]._virname="";
@@ -285,15 +269,4 @@ public class Board {
 		
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

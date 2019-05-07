@@ -1,36 +1,19 @@
 package loadingdocks;
 
-import java.awt.Color;
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
-import java.util.Stack;
 
 import javafx.util.Pair;
 
-/**
- * Agent behavior
- * @author Rui Henriques
- */
 public abstract class Agent extends Entity {
 
-	public enum Desire { grab, drop, initialPosition }
+	public enum Desire { } //TODO
 	public enum Action { moveAhead, rotate, grab, drop, rotateRight, rotateLeft}
 	
-	public static int NUM_BOXES = 8;
-	
 	public int direction = 90;
-	//public Box cargo;
 	
 	public Point initialPoint;
-	public int boxesOnShelves, boxesOnRamp;
-	public Map<Point,Block> warehouse; //internal map of the warehouse
-	public List<Point> freeShelves; //free shelves
-	public List<Point> boxedRamp; //ramp cells with boxes
 	
 	public List<Desire> desires;
 	public Pair<Desire,Point> intention;
@@ -111,40 +94,25 @@ public abstract class Agent extends Entity {
 //		return result;
 //	}
 
-	private Action rotate(Point p1, Point p2) {
-		boolean vertical = Math.abs(p1.x-p2.x)<Math.abs(p1.y-p2.y);
-		boolean upright = vertical ? p1.y<p2.y : p1.x<p2.x;
-		if(vertical) {  
-			if(upright) { //move up
-				if(direction!=0) return direction==90 ? Action.rotateLeft : Action.rotateRight;
-			} else if(direction!=180) return direction==90 ? Action.rotateRight : Action.rotateLeft;
-		} else {
-			if(upright) { //move right
-				if(direction!=90) return direction==180 ? Action.rotateLeft : Action.rotateRight;
-			} else if(direction!=270) return direction==180 ? Action.rotateRight : Action.rotateLeft;
-		}
-		return null;
-	}
+//	private Action rotate(Point p1, Point p2) {
+//		boolean vertical = Math.abs(p1.x-p2.x)<Math.abs(p1.y-p2.y);
+//		boolean upright = vertical ? p1.y<p2.y : p1.x<p2.x;
+//		if(vertical) {  
+//			if(upright) { //move up
+//				if(direction!=0) return direction==90 ? Action.rotateLeft : Action.rotateRight;
+//			} else if(direction!=180) return direction==90 ? Action.rotateRight : Action.rotateLeft;
+//		} else {
+//			if(upright) { //move right
+//				if(direction!=90) return direction==180 ? Action.rotateLeft : Action.rotateRight;
+//			} else if(direction!=270) return direction==180 ? Action.rotateRight : Action.rotateLeft;
+//		}
+//		return null;
+//	}
 
 	
 	/********************/
 	/**** E: sensors ****/
 	/********************/
-	
-	/* Check if agent is carrying box */
-//	public boolean cargo() {
-//		return cargo != null;
-//	}
-	
-	/* Return the color of the box */
-//	public Color cargoColor() {
-//	  return cargo.color;
-//	}
-
-	/* Return the color of the shelf ahead or 0 otherwise */
-//	public Color shelfColor(){
-//		return Board.getBlock(ahead).color;
-//	}
 
 	/* Check if the cell ahead is floor (which means not a wall, not a shelf nor a ramp) and there are any robot there */
 	public boolean isFreeCell() {
@@ -171,34 +139,20 @@ public abstract class Agent extends Entity {
 //	  return Board.getBlock(ahead).color;
 //	}
 
-	/* Check if the cell ahead is a shelf */
-//	public boolean isVirus() {
-//	  Block block = Board.getBlock(ahead);
-//	  return block.shape.equals(Shape.shelf);
-//	}
-
-	/* Check if the cell ahead is a ramp */
-//	public boolean isRamp(){
-//	  Block block = Board.getBlock(ahead);
-//	  return block.shape.equals(Shape.ramp);
-//	}
-
 	/* Check if the cell ahead is a wall */
 	protected boolean isWall() {
 		return ahead.x<0 || ahead.y<0 || ahead.x>=Board.nX || ahead.y>=Board.nY;
 	}
 	
-	protected boolean hasCell(int x, int y) {
-		
+	protected boolean hasCell(int x, int y) {		
 		Point p = new Point(x, y);
-		
 		return Board.hasCell(p);
 	}
 
-	/* Check if the cell ahead is a wall */
-	private boolean isWall(int x, int y) {
-		return x<0 || y<0 || x>=Board.nX || y>=Board.nY;
-	}
+//	/* Check if the cell ahead is a wall */
+//	private boolean isWall(int x, int y) {
+//		return x<0 || y<0 || x>=Board.nX || y>=Board.nY;
+//	}
 
 	/**********************/
 	/**** F: actuators ****/
@@ -226,24 +180,12 @@ public abstract class Agent extends Entity {
 		//if(cargo()) cargo.moveBox(ahead);
 		point = ahead;
 	}
-
-	/* Cargo box */
-//	public void grabBox() {
-//	  cargo = (Box) Board.getEntity(ahead);
-//	  cargo.grabBox(point);
-//	}
-
-	/* Drop box */
-//	public void dropBox() {
-//		cargo.dropBox(ahead);
-//	    cargo = null;
-//	}
 	
 	/**********************/
 	/**** G: auxiliary ****/
 	/**********************/
 
-	/* Check if plan is empty */
+//	/* Check if plan is empty */
 //	private boolean hasPlan() {
 //		return !plan.isEmpty();
 //	}
@@ -273,29 +215,29 @@ public abstract class Agent extends Entity {
 	    }
 	} 
 	
-	public Node shortestPath(Point src, Point dest) { 
-	    boolean[][] visited = new boolean[100][100]; 
-	    visited[src.x][src.y] = true; 
-	    Queue<Node> q = new LinkedList<Node>(); 
-	    q.add(new Node(src,null)); //enqueue source cell 
-	    
-		//access the 4 neighbours of a given cell 
-		int row[] = {-1, 0, 0, 1}; 
-		int col[] = {0, -1, 1, 0}; 
-	     
-	    while (!q.isEmpty()){//do a BFS 
-	        Node curr = q.remove(); //dequeue the front cell and enqueue its adjacent cells
-	        Point pt = curr.point; 
-	        for (int i = 0; i < 4; i++) { 
-	            int x = pt.x + row[i], y = pt.y + col[i]; 
-    	        if(x==dest.x && y==dest.y) return new Node(dest,curr); 
-	            if(!isWall(x,y) && !warehouse.containsKey(new Point(x,y)) && !visited[x][y]){ 
-	                visited[x][y] = true; 
-	    	        q.add(new Node(new Point(x,y), curr)); 
-	            } 
-	        }
-	    }
-	    return null; //destination not reached
-	} 
+//	public Node shortestPath(Point src, Point dest) { 
+//	    boolean[][] visited = new boolean[100][100]; 
+//	    visited[src.x][src.y] = true; 
+//	    Queue<Node> q = new LinkedList<Node>(); 
+//	    q.add(new Node(src,null)); //enqueue source cell 
+//	    
+//		//access the 4 neighbours of a given cell 
+//		int row[] = {-1, 0, 0, 1}; 
+//		int col[] = {0, -1, 1, 0}; 
+//	     
+//	    while (!q.isEmpty()){//do a BFS 
+//	        Node curr = q.remove(); //dequeue the front cell and enqueue its adjacent cells
+//	        Point pt = curr.point; 
+//	        for (int i = 0; i < 4; i++) { 
+//	            int x = pt.x + row[i], y = pt.y + col[i]; 
+//    	        if(x==dest.x && y==dest.y) return new Node(dest,curr); 
+//	            if(!isWall(x,y) && !warehouse.containsKey(new Point(x,y)) && !visited[x][y]){ 
+//	                visited[x][y] = true; 
+//	    	        q.add(new Node(new Point(x,y), curr)); 
+//	            } 
+//	        }
+//	    }
+//	    return null; //destination not reached
+//	} 
 
 }

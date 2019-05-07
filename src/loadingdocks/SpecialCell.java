@@ -7,7 +7,6 @@ public class SpecialCell extends Agent{
 
 	public SpecialCell(Point point, String type) {
 		super(point, type);
-		// TODO Auto-generated constructor stub
 		System.out.println("Special created at: "+point.getX()+","+point.getY());
 	}
 
@@ -34,11 +33,10 @@ public class SpecialCell extends Agent{
 
 	@Override
 	public void agentSimpleDecision() {
-		// TODO Auto-generated method stub
 		ahead = aheadPosition();
 		if(isWall()) rotateRandomly();
 		else if(isVirusAhead()) {
-			//delete virus ahead
+			//TODO delete virus ahead
 		}
 		else if(random.nextInt(5) == 0) rotateRandomly();
 		else moveAhead();

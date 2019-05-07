@@ -7,7 +7,6 @@ import java.util.Random;
 public class WhiteCell extends Agent {
 
 	public WhiteCell(Point p, String string) {
-		// TODO Auto-generated constructor stub
 		super(p,string);
 	}
 
