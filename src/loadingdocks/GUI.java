@@ -39,8 +39,8 @@ public class GUI extends JFrame {
         @Override
         protected synchronized void paintComponent(Graphics g) {
         	super.paintComponent(g);
-
-        	for(Entity entity : entities) {
+			for(int i = 0; i < entities.size();i++){
+				Entity entity = entities.get(i);
         		entity.paint(g);   
         	}
         }
@@ -137,7 +137,7 @@ public class GUI extends JFrame {
 					}
 					if(time>0){
 						Board.run(time);
-	 					run.setText("Stop");						
+	 					run.setText("Stop");
 					}
  				} else {
 					Board.stop();

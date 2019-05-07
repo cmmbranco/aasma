@@ -150,12 +150,13 @@ public class Board {
 			int counter = 0;
 	    	while(true){
 	    		if (Board.finished()) {
+					iterCounter++;
 					System.out.println("Steps taken: " + counter);
-	    			simplereset();
 					counter = 0;
-					if(iterCounter >= howManyTimesToRun)
+					if (iterCounter >= howManyTimesToRun)
 						Board.stop();
-						iterCounter++;
+					else
+						simplereset();
 	    		}
 	    		step();
 				counter++;
