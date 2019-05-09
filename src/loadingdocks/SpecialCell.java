@@ -47,8 +47,8 @@ public class SpecialCell extends Agent{
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.yellow);
-    	g.drawRect(15, 15, 20, 20);
-    	g.fillRect(15, 15, 20, 20);
+    	g.drawRect(0, 0, 20, 20);
+    	g.fillRect(0, 0, 20, 20);
 	}
 
 }
