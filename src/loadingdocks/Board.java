@@ -254,6 +254,8 @@ public class Board {
 	}
 
 	public static boolean hasCell(Point p) {	
+		
+		//Check for white cells in point
 		if(toticellsList != null) {
 			for(Agent a : toticellsList) {
 				if (p.x == a.point.getX() && p.y == a.point.getY()) {
@@ -262,6 +264,7 @@ public class Board {
 			}
 		}
 		
+		//Check for specialized cell in point
 		if(specializedList != null) {
 			for(Agent a : specializedList) {
 				if (p.x == a.point.getX() && p.y == a.point.getY()) {
@@ -270,6 +273,7 @@ public class Board {
 			}
 		}
 		
+		//Check for virus in point
 		if(virusList != null) {
 			for(Agent a : virusList) {
 				if (p.x == a.point.getX() && p.y == a.point.getY()) {
@@ -287,7 +291,7 @@ public class Board {
 		specializedList.add(c);
 		objects[chosen.x][chosen.y] = c;
 		board[chosen.x][chosen.y]._concentration = 100;
-		board[chosen.x][chosen.y]._virname="";
+		board[chosen.x][chosen.y]._virname=virusname;
 		
 		
 	}
