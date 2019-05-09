@@ -1,6 +1,6 @@
 package loadingdocks;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Vector;
 
 
@@ -50,7 +50,7 @@ public class Board {
 		board[p2.x][p2.y]._virname = v2.name;
 		virusList.add(v2);
 		
-		
+		System.out.println(objects[0][0]);
 		
 		/** Probabilistic approach */
 //		for(int i=0; i < nX; i++) {
@@ -195,7 +195,12 @@ public class Board {
 		removeObjects();
 		for(Agent a : toticellsList) a.agentSimpleDecision();
 		for(Agent a : specializedList) a.agentSimpleDecision();
-		for(Agent a : virusList) a.agentSimpleDecision();
+
+		Vector<Virus>  copy = new Vector<Virus>(virusList);;
+		for(int i = 0; i < copy.size(); i++) {
+			Agent a = copy.get(i);
+			a.agentSimpleDecision();
+		}
 		displayObjects();
 		GUI.update();
 	}
@@ -283,7 +288,16 @@ public class Board {
 		
 		
 	}
-	
+
+	public static void addVirus(Virus v, int concentration, String virusname) {
+		if(objects[v.point.x][v.point.y] == null) {
+			objects[v.point.x][v.point.y] = v;
+			board[v.point.x][v.point.y]._concentration = 100;
+			board[v.point.x][v.point.y]._virname = v.name;
+			virusList.add(v);
+			System.out.println("Should added a virus");
+		}
+	}
 	
 
 	public static synchronized void deleteVirus(Point p) {
