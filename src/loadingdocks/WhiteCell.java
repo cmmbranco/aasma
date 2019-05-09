@@ -33,7 +33,7 @@ public class WhiteCell extends Agent {
 			String virusname = Board.getEntity(ahead).name;
 			
 			Vector<Point> surr = Board.getSurroundingPoints(this);
-			System.out.println("# surround " + surr.size());
+			//System.out.println("# surround " + surr.size());
 			Vector<Point> free = new Vector<Point>();
 			
 			for(Point p : surr) {

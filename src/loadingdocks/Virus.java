@@ -3,10 +3,12 @@ package loadingdocks;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.util.Collections;
+import java.util.Vector;
 
 public class Virus extends Agent{
 	public String name;
-	public float replicationProb = 0.005f;
+	public float replicationProb = 0.03f;
 
 	public Virus(Point p, String string) {
 		super(p,string);
@@ -16,36 +18,30 @@ public class Virus extends Agent{
 		// TODO
 		
 		//replicate to a free cell around with a given prob
-
-		if (point.x > 0 && Math.random() < replicationProb) {
-			Point p1 = new Point(point.x - 1, point.y);
+		Vector<Point> surr = Board.getSurroundingPoints(this);
+		Vector<Point> free = new Vector<Point>();
+		
+		for(Point p : surr) {
+			if (!hasCell(p.x,p.y)){
+				free.add(p);
+			}
+		}
+		
+		if (free.isEmpty()) {
+			return;
+		}
+		
+		double rand = Math.random();
+		Collections.shuffle(free);
+		
+		Point p1 = free.get(0);
+		
+		if (rand <= replicationProb) {
 			Virus v1 = new Virus(p1, name);
 
 			Board.addVirus(v1, 100, name);
-			return;
-		}
-		if (point.x < Board.nX - 1 && Math.random() < replicationProb) {
-			Point p1 = new Point(point.x + 1, point.y);
-			Virus v1 = new Virus(p1, name);
-
-			Board.addVirus(v1, 100, name);
-			return;
-		}
-		if (point.y > 0 && Math.random() < replicationProb) {
-			Point p1 = new Point(point.x, point.y-1);
-			Virus v1 = new Virus(p1, name);
-
-			Board.addVirus(v1, 100, name);
-			return;
 		}
 
-		if (point.y < Board.nY -1 && Math.random() < replicationProb) {
-			Point p1 = new Point(point.x, point.y+1);
-			Virus v1 = new Virus(p1, name);
-
-			Board.addVirus(v1, 100, name);
-			return;
-		}
 	}
 	@Override
 	public void agentComplexDecision() {
