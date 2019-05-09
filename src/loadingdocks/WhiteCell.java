@@ -25,8 +25,7 @@ public class WhiteCell extends Agent {
 	@Override
 	public void agentSimpleDecision() {
 		ahead = aheadPosition();
-		if(isWall()) rotateRandomly();
-		else if(isVirusAhead()) {
+		if(isVirusAhead()) {
 			
 			System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
 			//find location
@@ -60,8 +59,8 @@ public class WhiteCell extends Agent {
 			
 			
 		}
-		else if(random.nextInt(5) == 0) rotateRandomly();
-		else moveAhead();
+		else if(random.nextInt(5) == 0 || isWall()) rotateRandomly();
+		else if(isFreeCell()) moveAhead();
 
 	}
 

@@ -116,11 +116,7 @@ public abstract class Agent extends Entity {
 
 	/* Check if the cell ahead is floor (which means not a wall, not a shelf nor a ramp) and there are any robot there */
 	public boolean isFreeCell() {
-	  return isRoomFloor() && Board.getEntity(ahead)==null;
-	}
-
-	public boolean isRoomFloor() {
-		return Board.getBlock(ahead) != null;
+	  return Board.getEntity(ahead)==null;
 	}
 	
 	/* Check if the cell ahead contains a box */

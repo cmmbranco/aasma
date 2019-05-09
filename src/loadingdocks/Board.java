@@ -112,6 +112,9 @@ public class Board {
 	 ****************************/
 	
 	public static synchronized Entity getEntity(Point point) {
+		if(point.x < 0 || point.x > Board.nX-1 || point.y < 0 || point.y > Board.nY-1) {
+			return null;
+		}
 		return objects[point.x][point.y];
 	}
 	public static synchronized Block getBlock(Point point) {
@@ -302,7 +305,6 @@ public class Board {
 
 	public static synchronized void deleteVirus(Point p) {
 		//delete from virus
-		
 		Virus todel;
 		
 		for(Virus v : virusList) {
@@ -310,6 +312,7 @@ public class Board {
 				todel = v;
 				//remove from viruslist
 				virusList.remove(todel);
+				removeEntity(p);
 				return;
 				//remove from entities
 //				for (Entity[] e : objects) {

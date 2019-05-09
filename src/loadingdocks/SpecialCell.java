@@ -37,13 +37,11 @@ public class SpecialCell extends Agent{
 	@Override
 	public void agentSimpleDecision() {
 		ahead = aheadPosition();
-		if(isWall()) rotateRandomly();
-		else if(isVirusAhead()) {
-			//TODO delete virus ahead
+		if(isVirusAhead()) {
 			Board.deleteVirus(ahead);
 		}
-		else if(random.nextInt(5) == 0) rotateRandomly();
-		else moveAhead();
+		else if(random.nextInt(5) == 0 || isWall()) rotateRandomly();
+		else if(isFreeCell()) moveAhead();
 	}
 
 	@Override
