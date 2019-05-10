@@ -1,6 +1,7 @@
 package loadingdocks;
 
 import java.awt.*;
+import java.net.DatagramSocketImpl;
 import java.util.Vector;
 
 
@@ -11,106 +12,108 @@ public class Board {
 	public static int nX = 23, nY = 23;
 	private static Block[][] board;
 	private static Entity[][] objects;
+	private static Vector<Gradient> gradientsList;
 	private static Vector<WhiteCell> toticellsList;
 	private static Vector<SpecialCell> specializedList;
 	private static Vector<Virus> virusList;
-	
-	
+
+
 	/****************************
 	 ***** A: SETTING BOARD *****
 	 ****************************/
-	
+
 	public static void simpleinitialize() {
 		board = new Block[nX][nY];
 		objects = new Agent[nX][nY];
 		toticellsList = new Vector<WhiteCell>();
 		specializedList = new Vector<SpecialCell>();
+		gradientsList = new Vector<Gradient>();
 		virusList = new Vector<Virus>();
-		
-		
+
+
 		/** A: create board */
-		for(int i=0; i<nX; i++) 
-			for(int j=0; j<nY; j++) 
+		for(int i=0; i<nX; i++)
+			for(int j=0; j<nY; j++)
 				board[i][j] = new Block(i,j);
-				
+
 		/** B: create 2 Virus at bottom right corner and top right*/
 		Point p1 = new Point(nX-1,0);
 		Point p2 = new Point(nX-1,nY-1);
-		
+
 		Virus v1 = new Virus(p1, "flu");
 		Virus v2 = new Virus(p2, "flu");
-		
+
 		objects[p1.x][p1.y] = v1;
 		board[p1.x][p1.y]._concentration=100;
 		board[p1.x][p1.y]._virname = v1.name;
 		virusList.add(v1);
-		
+
 		objects[p2.x][p2.y] = v2;
 		board[p2.x][p2.y]._concentration=100;
 		board[p2.x][p2.y]._virname = v2.name;
 		virusList.add(v2);
-		
+
 		System.out.println(objects[0][0]);
-		
+
 		/** Probabilistic approach */
 //		for(int i=0; i < nX; i++) {
 //			for(int j=0; j < nY; j++) {
 //				// virus appear with a 1% probability
 //				if (Math.random() <= 0.005) {
-//					
+//
 //					Point p = new Point(i,j);
-//					
+//
 //					Virus v = new Virus(p, "flu");
-//					
+//
 //					objects[i][j] = v;
 //					virusList.add(v);
 //					board[i][j]._concentration=100;
 //					board[i][j]._virname = objects[i][j].name;
-//					
-//					
+//
+//
 //				}
-//				
+//
 //			}
 //		}
-		
+
 		/** C: create agents, only 1 toti */
 
-		
+
 		Point p3 = new Point(0,0);
 		WhiteCell w1 = new WhiteCell(p3, "white1");
-		
+
 		objects[0][0] = w1;
 		board[0][0]._concentration=0;
 		board[0][0]._virname = "";
 		toticellsList.add(w1);
-		
+
 //		for(int i=0; i < nX; i++) {
 //			for(int j=0; j < nY; j++) {
 //				// virus appear with a .5% probability
 //				if (objects[i][j] == null) {
 //					if (Math.random() <= 0.0001) {
-//						
+//
 //						Point p = new Point(i,j);
-//						
+//
 //						WhiteCell c = new WhiteCell(p,"wite");
-//						
+//
 //						objects[i][j] = c;
 //						toticellsList.add(c);
 //						board[i][j]._concentration=0;
 //						board[i][j]._virname = null;
-//					
+//
 //					}
 //				}
 //			}
 //		}
-		
-		
+
+
 	}
-	
+
 	/****************************
 	 ***** B: BOARD METHODS *****
 	 ****************************/
-	
+
 	public static synchronized Entity getEntity(Point point) {
 		if(point.x < 0 || point.x > Board.nX-1 || point.y < 0 || point.y > Board.nY-1) {
 			return null;
@@ -123,7 +126,7 @@ public class Board {
 	public static synchronized void updateEntityPosition(Point point, Point newpoint) {
 		objects[newpoint.x][newpoint.y] = objects[point.x][point.y];
 		objects[point.x][point.y] = null;
-	}	
+	}
 	public static synchronized void removeEntity(Point point) {
 		objects[point.x][point.y] = null;
 	}
@@ -134,7 +137,7 @@ public class Board {
 	/***********************************
 	 ***** C: ELICIT AGENT ACTIONS *****
 	 ***********************************/
-	
+
 	private static RunThread runThread;
 	private static GUI GUI;
 
@@ -142,13 +145,13 @@ public class Board {
 	public static int howManyTimesToRun = 1;
 
 	public static class RunThread extends Thread {
-		
+
 		int time;
-		
+
 		public RunThread(int time){
 			this.time = time*time;
 		}
-		
+
 	    public void run() {
 			int counter = 0;
 	    	while(true){
@@ -171,7 +174,7 @@ public class Board {
 	    	}
 	    }
 	}
-	
+
 	public static void run(int time) {
 		iterCounter = 0;
 		Board.runThread = new RunThread(time);
@@ -184,16 +187,16 @@ public class Board {
 		while(toticellsList.isEmpty() || virusList.isEmpty()) {
 			simpleinitialize();
 		}
-		
+
 		GUI.displayBoard();
-		displayObjects();	
+		displayObjects();
 		GUI.update();
 	}
 
 //	public static void broadcastBeliefs(Object object) {
-//		for(Agent a : robots) a.receiveMessage(object);		
+//		for(Agent a : robots) a.receiveMessage(object);
 //	}
-	
+
 	public static void step() {
 		removeObjects();
 		for(Agent a : toticellsList) a.agentSimpleDecision();
@@ -217,16 +220,90 @@ public class Board {
 		for(Agent agent : toticellsList) GUI.displayObject(agent);
 		for(Agent agent : virusList) GUI.displayObject(agent);
 		for(Agent agent : specializedList) GUI.displayObject(agent);
-		
-		
+
+		calculateGradient();
+
+		for(Entity gr : gradientsList) GUI.displayObject(gr);
 	}
-	
+
 	public static void removeObjects(){
+		for(Entity gr : gradientsList) GUI.removeObject(gr);
 		for(Agent agent : toticellsList) GUI.removeObject(agent);
 		for(Agent agent : virusList) GUI.removeObject(agent);
 		for(Agent agent : specializedList) GUI.removeObject(agent);
+
+		gradientsList = new Vector<>();
 	}
-	
+
+
+	public static void calculateGradient() {
+
+		Vector<Point> points = new Vector<Point>();
+
+		Vector<Gradient> tempGradientList = new Vector<Gradient>();
+		for(Virus vir : virusList){
+			System.out.println(vir.point);
+			Point p = vir.point;
+
+			if(p.x < nX-1 && objects[p.x+1][p.y] == null)
+				points.add(new Point(p.x+1,p.y));
+			if(p.x > 0 && objects[p.x-1][p.y] == null)
+				points.add(new Point(p.x-1,p.y));
+			if(p.y < nY-1 && objects[p.x][p.y+1] == null)
+				points.add(new Point(p.x,p.y+1));
+			if(p.y > 0 && objects[p.x][p.y-1] == null)
+				points.add(new Point(p.x,p.y-1));
+		}
+		//System.out.println(points);
+		for(Point pnt : points){
+			Gradient object = new Gradient(pnt, "Gr",100);
+			//object.setConcentration(100);
+			tempGradientList.add(object);
+		}
+
+		while(tempGradientList.size() > 0){
+
+			Vector<Gradient>  copy = new Vector<Gradient>(tempGradientList);;
+
+			for(int i = 0; i < copy.size(); i++) {
+				Gradient gr = copy.get(i);
+				if(gr.concentration <= 25){
+					gradientsList.add(gr);
+					board[gr.point.x][gr.point.y]._concentration = gr.concentration;
+					tempGradientList.remove(gr);
+				}else{
+
+					Point p = gr.point;
+
+					Vector<Point> tempPoints = new Vector<Point>();
+
+					if(p.x < nX-1 && objects[p.x+1][p.y] == null)
+						tempPoints.add(new Point(p.x+1,p.y));
+					if(p.x > 0 && objects[p.x-1][p.y] == null)
+						tempPoints.add(new Point(p.x-1,p.y));
+					if(p.y < nY-1 && objects[p.x][p.y+1] == null)
+						tempPoints.add(new Point(p.x,p.y+1));
+					if(p.y > 0 && objects[p.x][p.y-1] == null)
+						tempPoints.add(new Point(p.x,p.y-1));
+
+					for(Point pq : tempPoints){
+						if(!points.contains(pq)){
+							Gradient newGR = new Gradient(pq, "Gr",gr.concentration -25);
+
+							board[pq.x][pq.y]._concentration = gr.concentration -25;
+							//newGR.setConcentration(gr.concentration -25);
+							points.add(pq);
+							tempGradientList.add(newGR);
+						}
+					}
+					gradientsList.add(gr);
+					tempGradientList.remove(gr);
+				}
+
+			}
+		}
+
+	}
 	public static void associateGUI(GUI graphicalInterface) {
 		GUI = graphicalInterface;
 	}
