@@ -3,7 +3,6 @@ package loadingdocks;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
@@ -15,10 +14,62 @@ public class WhiteCell extends Agent {
 
 	@Override
 	public void agentComplexDecision() {
-		//updateBeliefs();
+		updateBeliefs();
+		ahead = aheadPosition();
+		surr = Board.getSurroundingPoints(this);
+		if(isVirusAhead()) {
+			
+			System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
+			//find location
+			String virusname = Board.getEntity(ahead).name;
+			
+			//System.out.println("# surround " + surr.size());
+			Vector<Point> free = new Vector<Point>();
+			
+			for(Point p : surr) {
+				if (!hasCell(p.x,p.y)){
+					free.add(p);
+				}
+			}
+			
+			if (free.isEmpty()) {
+				rotateRandomly();
+			}
+			else {
+				Random randomGenerator = new Random();
+				int index = randomGenerator.nextInt(free.size());
+				
+				Point chosen = free.get(index);
+				
+				System.out.println("chosen block was " + chosen.x + "," +  chosen.y);
+				
+				Board.specialize(this,chosen,virusname);
+			}		
+		}
 		
-		//ArrayList<Point> surr = Board.getSurroundingPoints(this);
+		else {
+			Block p = null;
+			for(int i=0; i<surr.size();i++) {
+				Block pointCheck = Board.getBlock(surr.get(i));
+				
+				if((p == null && pointCheck.get_concentration() > 0) || (p != null && pointCheck.get_concentration() > p.get_concentration())
+						||(p != null && p.get_concentration() == pointCheck.get_concentration() && facesDirection(pointCheck))) { //When equal highest concentrations, favor the block that is in front instead of to the side)
+					p = pointCheck;
+				}
+			}
+			
+			
+			if(p != null) {
+				moveTo(ahead, p.getPointOfBlock());
+			}
+			else if(random.nextInt(5) == 0 || isWall()) {
+				rotateRandomly();
+			}
+			else if(isFreeCell()) {
+				moveAhead();
+			}
 		
+		}
 		
 	}
 

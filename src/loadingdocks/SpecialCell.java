@@ -3,8 +3,6 @@ package loadingdocks;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Vector;
 
 public class SpecialCell extends Agent{
 
@@ -17,21 +15,34 @@ public class SpecialCell extends Agent{
 	public void agentComplexDecision() {
 		updateBeliefs();
 		
-		Vector<Point> surr = Board.getSurroundingPoints(this);
-//		
-//		if(hasPlan() && !succeededIntention() && !impossibleIntention()){
-//			Action action = plan.remove();
-//            if(isPlanSound(action)) execute(action); 
-//            else buildPlan();
-//            if(reconsider()) deliberate();
-//			
-//		} else {
-//			updateBeliefs();
-//			deliberate();
-//			buildPlan();
-//			if(!hasPlan()) agentReactiveDecision();
-//		}
-		
+		ahead = aheadPosition();
+		if(isVirusAhead()) {
+			Board.deleteVirus(ahead);
+		}
+		else {
+	
+			surr = Board.getSurroundingPoints(this);
+			Block p = null;
+			for(int i=0; i<surr.size();i++) {
+				Block pointCheck = Board.getBlock(surr.get(i));
+				if((p == null && pointCheck.get_concentration() > 0) || (p != null && pointCheck.get_concentration() > p.get_concentration())
+						||(p != null && p.get_concentration() == pointCheck.get_concentration() && facesDirection(pointCheck))) { //When equal highest concentrations, favor the block that is in front instead of to the side
+					p = pointCheck;
+				}
+			}	
+			
+			
+			if(p != null) {
+				moveTo(ahead, p.getPointOfBlock());
+			}
+			else if(random.nextInt(5) == 0 || isWall()) {
+				rotateRandomly();
+			}
+			else if(isFreeCell()) {
+				moveAhead();
+			}
+		}
+	
 	}
 
 	@Override

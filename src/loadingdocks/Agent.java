@@ -3,6 +3,7 @@ package loadingdocks;
 import java.awt.Point;
 import java.util.List;
 import java.util.Queue;
+import java.util.Vector;
 
 import javafx.util.Pair;
 
@@ -21,6 +22,7 @@ public abstract class Agent extends Entity {
 	public Action lastAction;
 	
 	protected Point ahead;
+	protected Vector<Point> surr;
 	
 	public Agent(Point point, String type){ 
 		super(point, type);
@@ -137,7 +139,7 @@ public abstract class Agent extends Entity {
 
 	/* Check if the cell ahead is a wall */
 	protected boolean isWall() {
-		return ahead.x<0 || ahead.y<0 || ahead.x>=Board.nX || ahead.y>=Board.nY;
+		return (ahead.x<0 || ahead.y<0 || ahead.x >= Board.nX || ahead.y>=Board.nY);
 	}
 	
 	protected boolean hasCell(int x, int y) {		
@@ -170,11 +172,33 @@ public abstract class Agent extends Entity {
 		direction = (direction-90+360)%360;
 	}
 	
+	public void rotateToDirection(Point p) {
+		if((faceRight() && (point.y < p.y)) || (faceLeft() && (point.y > p.y)) || (faceUp() && (point.x < p.x)) || (faceDown() && (point.x > p.x))) {
+			System.out.println("Right");
+			rotateRight();
+		}
+		else {
+			System.out.println("Left");
+			rotateLeft();
+		}
+	}
+	
 	/* Move agent forward */
 	public void moveAhead() {
 		Board.updateEntityPosition(point,ahead);
 		//if(cargo()) cargo.moveBox(ahead);
 		point = ahead;
+	}
+	
+	public void moveTo(Point ahead, Point p) {
+		System.out.println(" In moveTo: " + ahead.x + " , " + ahead.y + " , "+ p.x + " , "+ p.y + " , " + Board.getBlock(p).get_concentration());
+		if(!isWall() && facesDirection(p)){
+			System.out.println("AHEAD");
+			moveAhead();
+		}
+		else{
+			rotateToDirection(p);
+		}
 	}
 	
 	/**********************/
@@ -197,6 +221,46 @@ public abstract class Agent extends Entity {
 		}
 		return newpoint;
 	}
+	
+	private boolean faceRight() {
+		return (point.x < ahead.x && point.y == ahead.y);
+	}
+	
+	private boolean faceLeft() {
+		return (point.x > ahead.x && point.y == ahead.y);
+	}
+	
+	private boolean faceUp() {
+		return (point.x == ahead.x && point.y < ahead.y);
+	}
+	
+	private boolean faceDown() {
+		return (point.x == ahead.x && point.y > ahead.y);
+	}
+	
+	protected boolean facesDirection(Block b) {		
+		return facesDirection(b.getPointOfBlock());		
+	}
+	
+	protected boolean facesDirection(Point p) {
+		return((point.x < p.x && faceRight() && point.y == p.y) || (point.x > p.x && faceLeft() && point.y == p.y) 
+				|| (point.y > p.y && faceDown() && point.x == p.x) || (point.y < p.y && faceUp() && point.x == p.x));
+	}
+	
+//	private boolean isRightOf(Point p1, Point p2) {
+//		return (p1.x > p2.x);
+//	}
+//	
+//	private boolean isLeftOf(Point p1, Point p2) {
+//		return (p1.x < p2.x);
+//	}
+//	
+//	private boolean isUnder(Point p1, Point p2) {
+//		return (p1.y < p2.y);
+//	}	
+//	private boolean isAbove(Point p1, Point p2) {
+//		return (p1.y > p2.y);
+//	}
 	
 	/* For queue used in shortest path */
 	public class Node { 

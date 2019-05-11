@@ -9,7 +9,6 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -47,7 +46,11 @@ public class GUI extends JFrame {
 	}
 
 	public GUI() {
-		setTitle("BloodCells");		
+		String version = "Simple";
+		if(!Board.simpleVersion){
+			version = "Complex";
+		}
+		setTitle("BloodCells, " + version + " version.");		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(null);
 		setSize(555, 625);

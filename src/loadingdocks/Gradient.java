@@ -1,8 +1,6 @@
 package loadingdocks;
 
 import java.awt.*;
-import java.util.Random;
-import java.util.Vector;
 
 public class Gradient extends Entity {
 	int concentration = 100;
@@ -18,7 +16,7 @@ public class Gradient extends Entity {
 
 	@Override
 	public void paint(Graphics g) {
-		System.out.println(concentration/100.0f);
+	//	System.out.println(concentration/100.0f);
 		g.setColor( new Color(0,0,(int)(255*(concentration/100.0f))));
     	g.drawRect(0, 0, 20, 20);
     	g.fillRect(0, 0, 20, 20);

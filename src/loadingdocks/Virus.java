@@ -15,8 +15,6 @@ public class Virus extends Agent{
 	}
 	@Override
 	public void agentSimpleDecision() {
-		// TODO
-		
 		//replicate to a free cell around with a given prob
 		Vector<Point> surr = Board.getSurroundingPoints(this);
 		Vector<Point> free = new Vector<Point>();
@@ -45,7 +43,10 @@ public class Virus extends Agent{
 	}
 	@Override
 	public void agentComplexDecision() {
-		// TODO
+		
+		agentSimpleDecision(); //TODO real implementation
+		
+		
 		/*
 		Point p1 = new Point(nX-1,0);
 		Point p2 = new Point(nX-1,nY-1);
@@ -69,6 +70,8 @@ public class Virus extends Agent{
 		//replicate to a cell free around with a given prob
 		
 	}
+	
+	
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.red);

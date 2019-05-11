@@ -1,5 +1,7 @@
 package loadingdocks;
 
+import java.awt.Point;
+
 public class Block {
 
 	
@@ -48,6 +50,10 @@ public class Block {
 	public void update(String virname, double concen) {
 		this._concentration += concen;
 		this._virname = virname;
+	}
+
+	public Point getPointOfBlock() {
+		return new Point(x,y);
 	}
 
 }

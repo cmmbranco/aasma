@@ -1,7 +1,6 @@
 package loadingdocks;
 
 import java.awt.*;
-import java.net.DatagramSocketImpl;
 import java.util.Vector;
 
 
@@ -10,12 +9,14 @@ public class Board {
 	/** The environment */
 
 	public static int nX = 23, nY = 23;
+	public static final boolean simpleVersion = true;
 	private static Block[][] board;
 	private static Entity[][] objects;
 	private static Vector<Gradient> gradientsList;
 	private static Vector<WhiteCell> toticellsList;
 	private static Vector<SpecialCell> specializedList;
 	private static Vector<Virus> virusList;
+	private static final int delta_concentration = 25;
 
 
 	/****************************
@@ -53,7 +54,7 @@ public class Board {
 		board[p2.x][p2.y]._virname = v2.name;
 		virusList.add(v2);
 
-		System.out.println(objects[0][0]);
+//		System.out.println(objects[0][0]);
 
 		/** Probabilistic approach */
 //		for(int i=0; i < nX; i++) {
@@ -199,13 +200,32 @@ public class Board {
 
 	public static void step() {
 		removeObjects();
-		for(Agent a : toticellsList) a.agentSimpleDecision();
-		for(Agent a : specializedList) a.agentSimpleDecision();
+		for(Agent a : toticellsList) {
+			if(simpleVersion) {
+				a.agentSimpleDecision();
+			}
+			else {
+				a.agentComplexDecision();
+			}
+		}
+		for(Agent a : specializedList) {
+			if(simpleVersion) {
+				a.agentSimpleDecision();
+			}
+			else {
+				a.agentComplexDecision();
+			}
+		}
 
 		Vector<Virus>  copy = new Vector<Virus>(virusList);;
 		for(int i = 0; i < copy.size(); i++) {
 			Agent a = copy.get(i);
-			a.agentSimpleDecision();
+			if(simpleVersion) {
+				a.agentSimpleDecision();
+			}
+			else {
+				a.agentComplexDecision();
+			}
 		}
 		displayObjects();
 		GUI.update();
@@ -242,7 +262,7 @@ public class Board {
 
 		Vector<Gradient> tempGradientList = new Vector<Gradient>();
 		for(Virus vir : virusList){
-			System.out.println(vir.point);
+//			System.out.println(vir.point);
 			Point p = vir.point;
 
 			if(p.x < nX-1 && objects[p.x+1][p.y] == null)
@@ -267,7 +287,7 @@ public class Board {
 
 			for(int i = 0; i < copy.size(); i++) {
 				Gradient gr = copy.get(i);
-				if(gr.concentration <= 25){
+				if(gr.concentration <= delta_concentration){
 					gradientsList.add(gr);
 					board[gr.point.x][gr.point.y]._concentration = gr.concentration;
 					tempGradientList.remove(gr);
@@ -288,10 +308,10 @@ public class Board {
 
 					for(Point pq : tempPoints){
 						if(!points.contains(pq)){
-							Gradient newGR = new Gradient(pq, "Gr",gr.concentration -25);
+							Gradient newGR = new Gradient(pq, "Gr",gr.concentration -delta_concentration);
 
-							board[pq.x][pq.y]._concentration = gr.concentration -25;
-							//newGR.setConcentration(gr.concentration -25);
+							board[pq.x][pq.y]._concentration = gr.concentration -delta_concentration;
+							//newGR.setConcentration(gr.concentration -delta_concentration);
 							points.add(pq);
 							tempGradientList.add(newGR);
 						}
