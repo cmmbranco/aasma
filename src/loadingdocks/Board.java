@@ -9,7 +9,7 @@ public class Board {
 	/** The environment */
 
 	public static int nX = 23, nY = 23;
-	public static final boolean simpleVersion = true;
+	public static final boolean simpleVersion = false;
 	private static Block[][] board;
 	private static Entity[][] objects;
 	private static Vector<Gradient> gradientsList;
@@ -428,6 +428,9 @@ public class Board {
 			
 			
 		}
+		
+		
+		//TODO remove all the concentrations caused by this virus
 		
 		
 		

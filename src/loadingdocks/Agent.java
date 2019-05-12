@@ -14,6 +14,9 @@ public abstract class Agent extends Entity {
 	
 	public int direction = 90;
 	
+	private enum Move {rotateLeft, rotateRight, moveAhead}
+	private Move lastMove = Move.moveAhead;
+	
 	public Point initialPoint;
 	
 	public List<Desire> desires;
@@ -165,21 +168,29 @@ public abstract class Agent extends Entity {
 	/* Rotate agent to right */
 	public void rotateRight() {
 		direction = (direction+90)%360;
+		lastMove = Move.rotateRight;
 	}
 	
 	/* Rotate agent to left */
 	public void rotateLeft() {
 		direction = (direction-90+360)%360;
+		lastMove = Move.rotateLeft;
 	}
 	
 	public void rotateToDirection(Point p) {
-		if((faceRight() && (point.y < p.y)) || (faceLeft() && (point.y > p.y)) || (faceUp() && (point.x < p.x)) || (faceDown() && (point.x > p.x))) {
+		if(((faceRight() && (point.y < p.y)) || (faceLeft() && (point.y > p.y)) || (faceUp() && (point.x < p.x)) || (faceDown() && (point.x > p.x))) && lastMove!=Move.rotateLeft) {
 			System.out.println("Right");
 			rotateRight();
 		}
-		else {
+		else if( lastMove!=Move.rotateRight){
 			System.out.println("Left");
 			rotateLeft();
+		}
+		else if(!isWall()) {
+			moveAhead();
+		}
+		else{
+			rotateRandomly();
 		}
 	}
 	
@@ -188,6 +199,7 @@ public abstract class Agent extends Entity {
 		Board.updateEntityPosition(point,ahead);
 		//if(cargo()) cargo.moveBox(ahead);
 		point = ahead;
+		lastMove = Move.moveAhead;
 	}
 	
 	public void moveTo(Point ahead, Point p) {
