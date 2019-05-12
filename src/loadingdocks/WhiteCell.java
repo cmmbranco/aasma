@@ -17,6 +17,7 @@ public class WhiteCell extends Agent {
 		updateBeliefs();
 		ahead = aheadPosition();
 		surr = Board.getSurroundingPoints(this);
+		
 		if(isVirusAhead()) {
 
 			System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
@@ -33,7 +34,7 @@ public class WhiteCell extends Agent {
 			}
 
 			if (free.isEmpty()) {
-				rotateRandomly();
+				//rotateRandomly();
 			}
 			else {
 				Random randomGenerator = new Random();
@@ -49,13 +50,20 @@ public class WhiteCell extends Agent {
 
 		else {
 			Gradient p = null;
+			
 			for(int i=0; i<surr.size();i++) {
 				Gradient pointCheck = Board.getConcentration(surr.get(i));
 
 				if (pointCheck != null) {
-
-					if((p == null && pointCheck.getConcentration() > 0) || (p != null && pointCheck.getConcentration() > p.getConcentration())
-							||(p != null && p.getConcentration() == pointCheck.getConcentration() && facesDirection(pointCheck))) { //When equal highest concentrations, favor the block that is in front instead of to the side)
+					
+					if (p==null) {
+						p = pointCheck;
+					}
+					
+					else if(pointCheck.getConcentration() > p.getConcentration()){
+						p = pointCheck;
+					}
+					else if ((p.getConcentration() == pointCheck.getConcentration()) && facesDirection(pointCheck)) { //When equal highest concentrations, favor the block that is in front instead of to the side)
 						p = pointCheck;
 					}
 				}
@@ -66,9 +74,11 @@ public class WhiteCell extends Agent {
 				moveTo(ahead, p.point);
 			}
 			else if(random.nextInt(5) == 0 || isWall()) {
+				System.out.println("Nograd");
 				rotateRandomly();
 			}
 			else if(isFreeCell()) {
+				System.out.println("Nograd");
 				moveAhead();
 			}
 

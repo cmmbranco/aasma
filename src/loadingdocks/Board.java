@@ -16,8 +16,7 @@ public class Board {
 	private static Vector<WhiteCell> toticellsList;
 	private static Vector<SpecialCell> specializedList;
 	private static Vector<Virus> virusList;
-	private static final int delta_concentration = 25;
-	private static final int visionOffset = 1;
+	private static final int delta_concentration = 5;
 
 
 	/****************************
