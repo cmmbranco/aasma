@@ -17,6 +17,7 @@ public class Board {
 	private static Vector<SpecialCell> specializedList;
 	private static Vector<Virus> virusList;
 	private static final int delta_concentration = 25;
+	private static final int visionOffset = 1;
 
 
 	/****************************
@@ -443,6 +444,20 @@ public class Board {
 	public static boolean finished() {
 		// TODO Auto-generated method stub
 		return virusList.isEmpty();
+	}
+
+	public static Gradient getConcentration(Point pnt) {
+		// TODO Auto-generated method stub
+		
+		Gradient vec = null;
+		
+		for(Gradient g : gradientsList) {
+			if (g.point.x == pnt.x && g.point.y == pnt.y) {
+				vec = g;
+			}
+		}
+		
+		return vec;
 	}
 
 }

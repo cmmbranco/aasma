@@ -4,6 +4,13 @@ import java.awt.*;
 
 public class Gradient extends Entity {
 	int concentration = 100;
+	
+	public int getConcentration() {
+		return concentration;
+	}
+	public void setConcentration(int concentration) {
+		this.concentration = concentration;
+	}
 	public Gradient(Point p, String string) {
 		super(p,string);
 	}

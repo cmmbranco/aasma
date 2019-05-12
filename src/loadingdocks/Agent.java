@@ -250,8 +250,8 @@ public abstract class Agent extends Entity {
 		return (point.x == ahead.x && point.y > ahead.y);
 	}
 	
-	protected boolean facesDirection(Block b) {		
-		return facesDirection(b.getPointOfBlock());		
+	protected boolean facesDirection(Gradient pointCheck) {		
+		return facesDirection(pointCheck.point);		
 	}
 	
 	protected boolean facesDirection(Point p) {

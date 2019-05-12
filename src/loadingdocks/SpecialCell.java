@@ -14,26 +14,30 @@ public class SpecialCell extends Agent{
 	@Override
 	public void agentComplexDecision() {
 		updateBeliefs();
-		
+
 		ahead = aheadPosition();
 		if(isVirusAhead()) {
 			Board.deleteVirus(ahead);
 		}
 		else {
-	
+
 			surr = Board.getSurroundingPoints(this);
-			Block p = null;
+			Gradient p = null;
+
 			for(int i=0; i<surr.size();i++) {
-				Block pointCheck = Board.getBlock(surr.get(i));
-				if((p == null && pointCheck.get_concentration() > 0) || (p != null && pointCheck.get_concentration() > p.get_concentration())
-						||(p != null && p.get_concentration() == pointCheck.get_concentration() && facesDirection(pointCheck))) { //When equal highest concentrations, favor the block that is in front instead of to the side
-					p = pointCheck;
-				}
+				Gradient pointCheck = Board.getConcentration(surr.get(i));
+
+				if (pointCheck != null) {
+					if((p == null && pointCheck.getConcentration() > 0) || (p != null && pointCheck.getConcentration() > p.getConcentration())
+							||(p != null && p.getConcentration() == pointCheck.getConcentration() && facesDirection(pointCheck))) { //When equal highest concentrations, favor the block that is in front instead of to the side
+						p = pointCheck;
+					}
+				} 
 			}	
-			
-			
+
+
 			if(p != null) {
-				moveTo(ahead, p.getPointOfBlock());
+				moveTo(ahead, p.point);
 			}
 			else if(random.nextInt(5) == 0 || isWall()) {
 				rotateRandomly();
@@ -42,7 +46,7 @@ public class SpecialCell extends Agent{
 				moveAhead();
 			}
 		}
-	
+
 	}
 
 	@Override
@@ -58,8 +62,8 @@ public class SpecialCell extends Agent{
 	@Override
 	public void paint(Graphics g) {
 		g.setColor(Color.yellow);
-    	g.drawRect(0, 0, 20, 20);
-    	g.fillRect(0, 0, 20, 20);
+		g.drawRect(0, 0, 20, 20);
+		g.fillRect(0, 0, 20, 20);
 	}
 
 }
