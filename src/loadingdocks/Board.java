@@ -1,6 +1,10 @@
 package loadingdocks;
 
+import javafx.css.converter.DeriveColorConverter;
+
 import java.awt.*;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Vector;
 
 
@@ -143,7 +147,13 @@ public class Board {
 	private static GUI GUI;
 
 	public static int iterCounter = 0;
-	public static int howManyTimesToRun = 1;
+	public static int howManyTimesToRun = 10;
+
+
+	public static Vector<Integer>  totalStepsCounter = new Vector<Integer>();
+	public static Vector<Integer> maxWhiteCellsCountTotal = new Vector<Integer>();
+	public static Vector<Integer>  maxVirusCountTotal = new Vector<Integer>();
+	public static int currentMaxVirusCount = 0;
 
 	public static class RunThread extends Thread {
 
@@ -155,16 +165,74 @@ public class Board {
 
 	    public void run() {
 			int counter = 0;
-	    	while(true){
+			FileWriter csvWriter = null;
+			try {
+				csvWriter = new FileWriter("stats.csv");
+
+				csvWriter.append("Run");
+				csvWriter.append(",");
+				csvWriter.append("Steps");
+				csvWriter.append(",");
+				csvWriter.append("Max White Cells");
+				csvWriter.append(",");
+				csvWriter.append("Max Virus Cells");
+				csvWriter.append("\n");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			while(true){
 	    		if (Board.finished()) {
 					iterCounter++;
-					System.out.println("Steps taken: " + counter);
-					counter = 0;
-					if (iterCounter >= howManyTimesToRun)
+					//System.out.println("Steps taken: " + counter);
+
+
+
+					try {
+						csvWriter.append(""+iterCounter);
+						csvWriter.append(","+ counter);
+						csvWriter.append(","+ (toticellsList.size() + specializedList.size()));
+						csvWriter.append(","+ (currentMaxVirusCount));
+						csvWriter.append("\n");
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+
+					//For statistics tracking purposes
+					maxWhiteCellsCountTotal.add(toticellsList.size() + specializedList.size());
+					maxVirusCountTotal.add(currentMaxVirusCount);
+					totalStepsCounter.add(counter);
+					if (iterCounter >= howManyTimesToRun) {
+
+						try {
+							csvWriter.flush();
+							csvWriter.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+
+
+						if(simpleVersion)
+							System.out.println("Version: Simple Version");
+						else
+							System.out.println("Version: Complex Version");
+						System.out.println("Board size "+ nX +"x"+nY);
+						System.out.println("Runs: " + howManyTimesToRun);
+						System.out.println("Total Steps taken: " + getSum(totalStepsCounter)+ " Mean Steps taken: " + getMean(totalStepsCounter) + " Deviation: " + getStandardDeviation(totalStepsCounter));
+						System.out.println("Total Max white cells: " + getSum(maxWhiteCellsCountTotal) +" Mean Max white cells: " + getMean(maxWhiteCellsCountTotal) + " Deviation: " + getStandardDeviation(maxWhiteCellsCountTotal));
+						System.out.println("Total Max virus cells: " + getSum(maxVirusCountTotal)+ " Mean Max virus cells: " + getMean(maxVirusCountTotal) + " Deviation: " + getStandardDeviation(maxVirusCountTotal));
 						Board.stop();
-					else
+
+
+					}else
 						simplereset();
+
+					counter = 0;
 	    		}
+
+	    		//Track virus cells
+				if(virusList.size() > currentMaxVirusCount){
+					currentMaxVirusCount = virusList.size();
+				}
 	    		step();
 				counter++;
 				try {
@@ -174,6 +242,34 @@ public class Board {
 				}
 	    	}
 	    }
+
+	    public float getStandardDeviation(Vector<Integer> vect){
+			float mean = getMean(vect);
+			float count = 0;
+
+			for(int i = 0; i < vect.size(); i++){
+				count += Math.pow(vect.get(i)-mean,2);
+			}
+			return (float)Math.sqrt(count/(float)vect.size());
+		}
+
+		public float getSum(Vector<Integer> vect){
+			float count = 0;
+
+			for(int i = 0; i < vect.size(); i++){
+				count += vect.get(i);
+			}
+			return count;
+		}
+
+		public float getMean(Vector<Integer> vect){
+			float count = 0;
+
+			for(int i = 0; i < vect.size(); i++){
+				count += vect.get(i);
+			}
+			return count/(float) vect.size();
+		}
 	}
 
 	public static void run(int time) {
@@ -192,6 +288,8 @@ public class Board {
 		GUI.displayBoard();
 		displayObjects();
 		GUI.update();
+
+		currentMaxVirusCount = 0;
 	}
 
 //	public static void broadcastBeliefs(Object object) {
