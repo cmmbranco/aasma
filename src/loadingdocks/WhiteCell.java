@@ -69,7 +69,7 @@ public class WhiteCell extends Agent {
 				}
 			}
 
-
+            System.out.println(p);
 			if(p != null) {
 				moveTo(ahead, p.point);
 			}

@@ -199,7 +199,16 @@ public class Board {
 //	}
 
 	public static void step() {
+
+
+
+
 		removeObjects();
+
+		//Calculate new gradient
+		calculateGradient();
+
+
 		for(Agent a : toticellsList) {
 			if(simpleVersion) {
 				a.agentSimpleDecision();
@@ -227,6 +236,10 @@ public class Board {
 				a.agentComplexDecision();
 			}
 		}
+		//Recalculate new gradient after action
+		gradientsList = new Vector<>();
+		calculateGradient();
+
 		displayObjects();
 		GUI.update();
 	}
@@ -240,10 +253,8 @@ public class Board {
 		for(Agent agent : toticellsList) GUI.displayObject(agent);
 		for(Agent agent : virusList) GUI.displayObject(agent);
 		for(Agent agent : specializedList) GUI.displayObject(agent);
-
-		calculateGradient();
-
 		for(Entity gr : gradientsList) GUI.displayObject(gr);
+
 	}
 
 	public static void removeObjects(){
@@ -442,6 +453,8 @@ public class Board {
 
 	public static boolean finished() {
 		// TODO Auto-generated method stub
+		System.out.println("Size is");
+		System.out.println(virusList.size());
 		return virusList.isEmpty();
 	}
 
