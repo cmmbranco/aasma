@@ -8,7 +8,7 @@ public class SpecialCell extends Agent{
 
 	public SpecialCell(Point point, String type) {
 		super(point, type);
-		System.out.println("Special created at: "+ point.getX() +","+ point.getY());
+		//System.out.println("Special created at: "+ point.getX() +","+ point.getY());
 	}
 
 	@Override

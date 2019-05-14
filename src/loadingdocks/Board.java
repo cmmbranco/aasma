@@ -147,13 +147,15 @@ public class Board {
 	private static GUI GUI;
 
 	public static int iterCounter = 0;
-	public static int howManyTimesToRun = 10;
+	public static int howManyTimesToRun = 2;
 
 
 	public static Vector<Integer>  totalStepsCounter = new Vector<Integer>();
 	public static Vector<Integer> maxWhiteCellsCountTotal = new Vector<Integer>();
 	public static Vector<Integer>  maxVirusCountTotal = new Vector<Integer>();
 	public static int currentMaxVirusCount = 0;
+
+	private static int[][] trackInstancesObjectsPerCell = new int[nX][nY];;
 
 	public static class RunThread extends Thread {
 
@@ -165,9 +167,13 @@ public class Board {
 
 	    public void run() {
 			int counter = 0;
+
 			FileWriter csvWriter = null;
 			try {
-				csvWriter = new FileWriter("stats.csv");
+				if(simpleVersion)
+					csvWriter = new FileWriter("stats-Simple.csv",true);
+				else
+					csvWriter = new FileWriter("stats-Complex.csv",true);
 
 				csvWriter.append("Run");
 				csvWriter.append(",");
@@ -176,23 +182,69 @@ public class Board {
 				csvWriter.append("Max White Cells");
 				csvWriter.append(",");
 				csvWriter.append("Max Virus Cells");
+				csvWriter.append(",");
+				csvWriter.append("Delta");
 				csvWriter.append("\n");
+
+
+				csvWriter.flush();
+				csvWriter.close();
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			while(true){
+
+				for(int i = 0; i < nX; i++){
+					for(int j = 0; j < nY; j++) {
+						if(objects[i][j] != null){
+							trackInstancesObjectsPerCell[i][j] +=1;
+						}
+					}
+				}
 	    		if (Board.finished()) {
 					iterCounter++;
-					//System.out.println("Steps taken: " + counter);
+					System.out.println("Current State: " + iterCounter +"/"+howManyTimesToRun);
 
+
+
+					FileWriter csvBoardWriter = null;
+					try {
+						if(simpleVersion)
+							csvBoardWriter = new FileWriter("board-Simple.csv",true);
+						else
+							csvBoardWriter  = new FileWriter("board-Complex.csv",true);
+
+						for(int i = 0; i < nX; i++){
+							for(int j = 0; j < nY; j++) {
+								String prefix = ",";
+								if(i == 0 && j == 0)
+									prefix = "";
+								csvBoardWriter.append(prefix+ (float)trackInstancesObjectsPerCell[i][j]/(float)counter);
+							}
+						}
+						csvBoardWriter.append("\n");
+						csvBoardWriter.flush();
+						csvBoardWriter.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 
 
 					try {
+						if(simpleVersion)
+							csvWriter = new FileWriter("stats-Simple.csv",true);
+						else
+							csvWriter = new FileWriter("stats-Complex.csv",true);
+
 						csvWriter.append(""+iterCounter);
 						csvWriter.append(","+ counter);
 						csvWriter.append(","+ (toticellsList.size() + specializedList.size()));
 						csvWriter.append(","+ (currentMaxVirusCount));
+						csvWriter.append(","+ (delta_concentration));
 						csvWriter.append("\n");
+
+						csvWriter.flush();
+						csvWriter.close();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -203,12 +255,6 @@ public class Board {
 					totalStepsCounter.add(counter);
 					if (iterCounter >= howManyTimesToRun) {
 
-						try {
-							csvWriter.flush();
-							csvWriter.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
 
 
 						if(simpleVersion)
@@ -220,6 +266,11 @@ public class Board {
 						System.out.println("Total Steps taken: " + getSum(totalStepsCounter)+ " Mean Steps taken: " + getMean(totalStepsCounter) + " Deviation: " + getStandardDeviation(totalStepsCounter));
 						System.out.println("Total Max white cells: " + getSum(maxWhiteCellsCountTotal) +" Mean Max white cells: " + getMean(maxWhiteCellsCountTotal) + " Deviation: " + getStandardDeviation(maxWhiteCellsCountTotal));
 						System.out.println("Total Max virus cells: " + getSum(maxVirusCountTotal)+ " Mean Max virus cells: " + getMean(maxVirusCountTotal) + " Deviation: " + getStandardDeviation(maxVirusCountTotal));
+
+
+
+
+
 						Board.stop();
 
 
@@ -288,7 +339,7 @@ public class Board {
 		GUI.displayBoard();
 		displayObjects();
 		GUI.update();
-
+		trackInstancesObjectsPerCell = new int[nX][nY];
 		currentMaxVirusCount = 0;
 	}
 
@@ -508,7 +559,7 @@ public class Board {
 			board[v.point.x][v.point.y]._concentration = 100;
 			board[v.point.x][v.point.y]._virname = v.name;
 			virusList.add(v);
-			System.out.println("Should added a virus");
+			//System.out.println("Should added a virus");
 		}
 	}
 	
@@ -551,8 +602,6 @@ public class Board {
 
 	public static boolean finished() {
 		// TODO Auto-generated method stub
-		System.out.println("Size is");
-		System.out.println(virusList.size());
 		return virusList.isEmpty();
 	}
 

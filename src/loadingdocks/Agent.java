@@ -179,11 +179,11 @@ public abstract class Agent extends Entity {
 	
 	public void rotateToDirection(Point p) {
 		if(((faceRight() && (point.y < p.y)) || (faceLeft() && (point.y > p.y)) || (faceUp() && (point.x < p.x)) || (faceDown() && (point.x > p.x))) && lastMove!=Move.rotateLeft) {
-			System.out.println("Right");
+			//System.out.println("Right");
 			rotateRight();
 		}
 		else if( lastMove!=Move.rotateRight){
-			System.out.println("Left");
+			//System.out.println("Left");
 			rotateLeft();
 		}
 		else if(!isWall()) {
@@ -203,9 +203,9 @@ public abstract class Agent extends Entity {
 	}
 	
 	public void moveTo(Point ahead, Point p) {
-		System.out.println(" In moveTo: " + ahead.x + " , " + ahead.y + " , "+ p.x + " , "+ p.y + " , " + Board.getBlock(p).get_concentration());
+		//System.out.println(" In moveTo: " + ahead.x + " , " + ahead.y + " , "+ p.x + " , "+ p.y + " , " + Board.getBlock(p).get_concentration());
 		if(!isWall() && facesDirection(p)){
-			System.out.println("AHEAD");
+			//System.out.println("AHEAD");
 			moveAhead();
 		}
 		else{

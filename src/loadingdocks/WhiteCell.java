@@ -20,7 +20,7 @@ public class WhiteCell extends Agent {
 		
 		if(isVirusAhead()) {
 
-			System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
+			//System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
 			//find location
 			String virusname = Board.getEntity(ahead).name;
 
@@ -42,7 +42,7 @@ public class WhiteCell extends Agent {
 
 				Point chosen = free.get(index);
 
-				System.out.println("chosen block was " + chosen.x + "," +  chosen.y);
+				//System.out.println("chosen block was " + chosen.x + "," +  chosen.y);
 
 				Board.specialize(this,chosen,virusname);
 			}		
@@ -69,16 +69,16 @@ public class WhiteCell extends Agent {
 				}
 			}
 
-            System.out.println(p);
+
 			if(p != null) {
 				moveTo(ahead, p.point);
 			}
 			else if(random.nextInt(5) == 0 || isWall()) {
-				System.out.println("Nograd");
+				//System.out.println("Nograd");
 				rotateRandomly();
 			}
 			else if(isFreeCell()) {
-				System.out.println("Nograd");
+				//System.out.println("Nograd");
 				moveAhead();
 			}
 
@@ -91,7 +91,7 @@ public class WhiteCell extends Agent {
 		ahead = aheadPosition();
 		if(isVirusAhead()) {
 
-			System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
+			//System.out.print("Virus Found at " + ahead.x+"," +ahead.y+" by " + this.name);
 			//find location
 			String virusname = Board.getEntity(ahead).name;
 
@@ -114,7 +114,7 @@ public class WhiteCell extends Agent {
 
 				Point chosen = free.get(index);
 
-				System.out.println("chosen block was " + chosen.x + "," +  chosen.y);
+				//System.out.println("chosen block was " + chosen.x + "," +  chosen.y);
 
 
 
